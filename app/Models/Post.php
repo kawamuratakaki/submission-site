@@ -14,11 +14,28 @@ class Post extends Model
     protected $fillable = [
         'title',
         'body',
+        'user_id',
+        'tag_id',
+        'image_url',
         ];
     
-    public function getPaginateByLimit(int $limit_count = 10)
+    function getPaginateByLimit(int $limit_count = 5)
     {
-    // updated_atで降順に並べたあと、limitで件数制限をかける
-    return $this->orderBy('updated_at', 'DESC')->paginate($limit_count);
+        return $this::with('tags')->orderBy('updated_at', 'DESC')->paginate($limit_count);
+    }
+    
+    public function likes()
+    {
+        return $this->hasMany(Like::class);  
+    }
+    
+    public function histories()
+    {
+        return $this->hasMany(History::class);  
+    }
+    
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);  
     }
 }
