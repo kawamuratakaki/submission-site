@@ -12,15 +12,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Models\Tag;
 
 class RegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
      */
-    public function create(): View
+    public function create(Tag $tag): View
     {
-        return view('auth.register');
+        return view('auth.register')->with(['tags' => $tag->get()]);
     }
 
     /**
@@ -41,10 +42,13 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-
+        
         event(new Registered($user));
 
         Auth::login($user);
+        
+        $input_tags = $request->tags_array; 
+        $user->tags()->attach($input_tags);
 
         return redirect(RouteServiceProvider::HOME);
     }

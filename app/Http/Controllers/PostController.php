@@ -7,12 +7,27 @@ use App\Http\Requests\PostRequest;
 use App\Models\Tag;
 use Cloudinary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PostController extends Controller
 {
     public function index(Post $post)
     {
-        return view('posts.index')->with(['posts' => $post->getPaginateByLimit(5)]);
+        $random_tag = Auth::user()->tags->random()->tag_name;
+        //dd($a);
+       
+        $random_posts = Post::whereHas('tags', function ($q) use ($random_tag) {
+             $q->where('tag_name', '=', $random_tag);
+        })->get();
+        //dd(count($random_posts));
+        if(count($random_posts)>0){
+            $random_post=$random_posts->random();
+    
+        }else{
+            $random_post=NULL;
+        }
+     
+        return view('posts.index')->with(['post' => $random_post, 'posts' => $post->getPaginateByLimit()]);
     }
 
     public function show(Post $post)
