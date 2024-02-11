@@ -24,13 +24,11 @@
             </div>
             <div class="category">
                 <h2>タグ</h2>
+                <select name="tags_array[]" multiple>
                     @foreach($tags as $tag)
-                        <label>
-                            <input type="checkbox" value="{{ $tag->id }}" name="tags_array[]">
-                            {{$tag->tag_name}}
-                            </input>
-                        </label>
+                        <option value="{{ $tag->id }}">{{ $tag->tag_name }}</option>
                     @endforeach
+                </select>
             </div>
             <div class="image">
                 <h2>イメージ画像</h2>

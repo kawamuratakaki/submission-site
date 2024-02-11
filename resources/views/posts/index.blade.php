@@ -11,7 +11,22 @@
             Dashboard
     　　</x-slot>
     <body>
-        <h1>おすすめ漫画</h1>
+        <h1 class="text-green-500 text-5xl">マイタグ</h1>
+        @foreach(Auth::user()->tags as $tag)
+            <div>
+                {{ $tag->tag_name }}
+            </div>
+        @endforeach
+
+　　　　<h1 class="bg-indigo-600">おすすめ漫画</h1>
+        @if(isset($post))
+        <div class="post">
+            <h2>{{ $post->title }}</h2>
+        </div>
+        @else
+            <p>漫画が見つかりません。</p>
+        @endif
+            
         <a href='/posts/create'>作成</a>
         <div>
             <form action="{{ route('search') }}" method="GET">
@@ -34,6 +49,11 @@
                         </div>
                     @endforeach
                     <p class='body'>{{ $post->body }}</p>
+                            @if($post->image_url)
+                                <div>
+                                    <img src="{{ $post->image_url }}" alt="画像が読み込めません。"/>
+                                </div>
+                            @endif
                     <form action="/posts/{{ $post->id }}" id="form_{{ $post->id }}" method="post">
                         @csrf
                         @method('DELETE')
