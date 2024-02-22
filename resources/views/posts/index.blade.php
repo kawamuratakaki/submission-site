@@ -97,6 +97,7 @@
                     @endauth
                     <p>{{ $post->likes->count() }}いいね数</p>
                     </div>
+<button class="share-button" data-share-url="{{ url(route('share', $post->id)) }}">シェア</button>
                 </div>
             </div>
             @endforeach
@@ -104,8 +105,39 @@
             <div class='paginate'>
                 {{ $posts->links() }}
             </div>
-        </body>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var shareButtons = document.querySelectorAll('.share-button');
+
+    shareButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            // ボタンに付加されたdata-share-url属性からシェアURLを取得
+            var shareUrl = button.getAttribute('data-share-url');
+
+            // コピー関数を呼び出す
+            copyToClipboard(shareUrl);
+        });
+    });
+
+    function copyToClipboard(text) {
+        var textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'コピーに成功しました！' : 'コピーに失敗しました。手動でコピーしてください。';
+            alert(msg);
+        } catch (err) {
+            console.error('コピーに失敗しました。', err);
+        }
+
+        document.body.removeChild(textarea);
+    }
+});
+</script>
         </x-app-layout>
     </div>
-</body>
+        </body>
 </html>
