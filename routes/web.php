@@ -21,6 +21,8 @@ Route::controller(PostController::class)->middleware(['auth'])->group(function()
     Route::delete('/posts/{post}', 'delete')->name('delete');
     Route::get('/posts/{post}/edit', 'edit')->name('edit');
     Route::get('/search', 'search')->name('search'); 
+    Route::get('/posts/unlike/{id}', 'unlike')->name('unlike');
+    Route::get('/posts/like/{id}', 'like')->name('like');
 });
 
 Route::get('/categories/{category}', [CategoryController::class,'index'])->middleware("auth");

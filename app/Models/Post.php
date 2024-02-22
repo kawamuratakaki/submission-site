@@ -19,11 +19,16 @@ class Post extends Model
         'image_url',
         ];
     
-    function getPaginateByLimit(int $limit_count = 5)
+    function getPaginateByLimit(int $limit_count = 1000)
     {
         return $this::with('tags')->orderBy('updated_at', 'DESC')->paginate($limit_count);
     }
     
+    public function isLikedBy(User $user)
+    {
+        return $this->likes()->where('user_id', $user->id)->exists();
+    }
+
     public function likes()
     {
         return $this->hasMany(Like::class);  
@@ -38,4 +43,10 @@ class Post extends Model
     {
         return $this->belongsToMany(Tag::class);  
     }
+    
+    public function user()
+    {
+        return $this->belongsTo(User::class); 
+    }
+
 }
