@@ -9,6 +9,7 @@ use Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Like;
+use Illuminate\Support\Facades\View;
 
 class PostController extends Controller
 {
@@ -124,4 +125,12 @@ public function update(PostRequest $request, Post $post)
         return redirect()->back();
     }
     
+    public function share($postId)
+    {
+        // $postId を使用して投稿データを取得するなどの処理を追加
+        $post = Post::findOrFail($postId);
+
+        // Blade テンプレートを使用してシェア画面を表示
+        return View::make('posts.show', compact('post'));
+    }
 }
