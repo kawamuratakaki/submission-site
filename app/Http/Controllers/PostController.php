@@ -8,6 +8,7 @@ use App\Models\Tag;
 use Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Like;
 
 class PostController extends Controller
 {
@@ -26,7 +27,6 @@ class PostController extends Controller
         }else{
             $random_post=NULL;
         }
-     
         return view('posts.index')->with(['post' => $random_post, 'posts' => $post->getPaginateByLimit()]);
     }
 
@@ -50,26 +50,43 @@ class PostController extends Controller
         return redirect('/posts/' . $post->id);
     }
     
-    public function edit(Post $post)
-    {
-        return view('posts.edit')->with(['post' => $post]);
-        
-    }
+   public function edit(Post $post)
+{
+    // 投稿に紐づいているタグ情報を取得
+    $tags = Tag::all();
+    $selectedTags = $post->tags()->pluck('tags.id')->toArray();
     
-    public function update(PostRequest $request, Post $post)
-    {
-        $input_post = $request['post'];
-        $input_post += ['user_id' => $request->user()->id]; 
-        $post->fill($input_post)->save();
-        
-        return redirect('/posts/' . $post->id);
-        
+    if ($post->user_id !== Auth::id()) {
+        return redirect()->route('index')->with('error', '自分の投稿のみ編集できます。');
     }
+
+    // 編集画面を表示するビューに、投稿とタグ情報を渡す
+    return view('posts.edit', compact('post', 'tags', 'selectedTags'));
+}
+    
+public function update(PostRequest $request, Post $post)
+{
+    // ユーザーが投稿者でない場合は一覧ページにリダイレクト
+    if ($post->user_id !== Auth::id()) {
+        return redirect()->route('index')->with('error', '自分の投稿のみ編集できます。');
+    }
+
+    // リクエストから投稿データを取得
+    $input_post = $request->input('post');
+
+    // ユーザーに紐づいた投稿データを更新
+    $post->fill($input_post)->save();
+
+    // タグの更新
+    $post->tags()->sync($request->tags_array);
+
+    return redirect('/posts/' . $post->id);
+}
     
     public function delete(Post $post)
     {
         $post->delete();
-        return redirect('/');
+        return redirect('/')->with('success', '投稿が削除されました');
         
     }
     
@@ -89,6 +106,22 @@ class PostController extends Controller
         $posts->appends(['keyword' => $keyword])->links();
         return view('posts.search')->with(['posts' => $posts]);
     }
+    
+    public function like($id) {
+        Like::create([
+            'post_id' => $id,
+            'user_id' => Auth::id(),
+        ]);
 
+        return redirect()->back();
+    }
 
+    public function unlike($id) {
+        $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
+        $like->delete();
+
+        
+        return redirect()->back();
+    }
+    
 }
