@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Like;
 use Illuminate\Support\Facades\View;
+use App\Models\Feedback;
+use Carbon\Carbon;
 
 class PostController extends Controller
 {
@@ -74,12 +76,19 @@ public function update(PostRequest $request, Post $post)
 
     // リクエストから投稿データを取得
     $input_post = $request->input('post');
+    
+    if($request->file('image')){
+            $image_url = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+            $input_post += ['image_url' => $image_url];
+        }
 
     // ユーザーに紐づいた投稿データを更新
     $post->fill($input_post)->save();
 
     // タグの更新
     $post->tags()->sync($request->tags_array);
+    
+    $post->update(['edited_at' => Carbon::now()]);
 
     return redirect('/posts/' . $post->id);
 }
@@ -125,12 +134,20 @@ public function update(PostRequest $request, Post $post)
         return redirect()->back();
     }
     
-    public function share($postId)
+    public function share($id)
     {
         // $postId を使用して投稿データを取得するなどの処理を追加
-        $post = Post::findOrFail($postId);
-
-        // Blade テンプレートを使用してシェア画面を表示
+        $post = Post::findOrFail($id);
+        
+        
         return View::make('posts.show', compact('post'));
     }
+    
+    public function showLikedPosts()
+{
+    // ログインしているユーザーがいいねした投稿を取得
+    $likedPosts = Auth::user()->likes()->with('post')->get();
+
+    return view('liked-posts.index', ['likedPosts' => $likedPosts]);
+}
 }

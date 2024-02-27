@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+    <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
 
         <!-- Name -->
@@ -38,6 +38,14 @@
 
             <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
         </div>
+        
+        <div class="mb-4">
+        <label for="profile_photo" class="block text-sm font-medium text-gray-700">
+            アイコン画像
+        </label>
+        <input type="file" name="profile_photo" id="profile_photo" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+        </div>
+        
         <div class="category">
             <h2>タグ</h2>
                 <select name="tags_array[]" multiple>

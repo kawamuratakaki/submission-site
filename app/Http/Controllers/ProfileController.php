@@ -26,10 +26,16 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $request->user()->fill($request->safe()->only(['name', 'email']));
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
+        }
+        
+        $path = null;
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('profile-icons', 'public');
+            $request->user()->profile_photo_path = $path;
         }
 
         $request->user()->save();
@@ -41,20 +47,26 @@ class ProfileController extends Controller
      * Delete the user's account.
      */
     public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current-password'],
-        ]);
+{
+    $request->validateWithBag('userDeletion', [
+        'password' => ['required', 'current-password'],
+    ]);
 
-        $user = $request->user();
+    $user = $request->user();
 
-        Auth::logout();
+    // ユーザーに関連する投稿を手動で削除
+    $user->posts()->delete();
 
-        $user->delete();
+    // ユーザーアカウントを削除
+    $user->delete();
 
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    Auth::logout();
 
-        return Redirect::to('/');
-    }
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return Redirect::to('/');
+}
+
+    
 }
