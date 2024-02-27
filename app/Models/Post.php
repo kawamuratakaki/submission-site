@@ -17,6 +17,7 @@ class Post extends Model
         'user_id',
         'tag_id',
         'image_url',
+        'edited_at',
         ];
     
     function getPaginateByLimit(int $limit_count = 1000)

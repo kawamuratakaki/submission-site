@@ -9,7 +9,7 @@
 </head>
 <body class="bg-red-900 min-h-screen flex justify-center items-center">
 <div class="container mx-auto py-8 px-4">
-        <form action="/posts/{{ $post->id }}" method="POST" class="bg-red-900 rounded-lg shadow-md p-6">
+        <form action="/posts/{{ $post->id }}" method="POST" enctype="multipart/form-data" class="bg-red-900 rounded-lg shadow-md p-6">
             @csrf
             @method('PUT')
             <div class='mb-6'>
@@ -28,6 +28,13 @@
                     @endforeach
                 </select>
             </div>
+            <div class='mb-6'>
+        <label for="image" class="block text-yellow-200 text-lg font-semibold mb-2">現在の画像</label>
+        @if($post->image_url)
+            <img src="{{ $post->image_url }}" alt="現在の画像" class="mb-4 max-w-full h-auto rounded-md">
+        @endif
+        <input type="file" id="image" name="image" class="w-full px-4 py-2 rounded-md shadow-sm bg-gray-100 text-gray-800 focus:outline-none focus:bg-white focus:ring-2 focus:ring-yellow-300">
+    </div>
             <div class="flex justify-between mb-6 block text-yellow-200 text-lg font-semibold">
                 <div class="transition duration-100 hover:text-black active:text-yellow-200">
                     <a href="/posts/{{ $post->id }}">戻る</a>

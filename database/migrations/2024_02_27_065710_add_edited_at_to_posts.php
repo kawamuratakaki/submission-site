@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('achievements', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->string('content');
-            $table->string('conplete');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->timestamp('edited_at')->nullable();
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('achievements');
+        Schema::table('posts', function (Blueprint $table) {
+            $table->dropColumn('edited_at');
+        });
     }
 };

@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -42,14 +42,23 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        
+
+        // プロフィール画像の保存
+        if ($request->hasFile('profile_photo')) {
+            $path = $request->file('profile_photo')->store('profile-photos', 'public');
+            $user->profile_photo_path = $path;
+            $user->save(); // プロフィール画像のパスを保存
+        }
+
         event(new Registered($user));
 
         Auth::login($user);
-        
-        $input_tags = $request->tags_array; 
+
+        $input_tags = $request->tags_array;
         $user->tags()->attach($input_tags);
 
         return redirect(RouteServiceProvider::HOME);
     }
+    
+    
 }

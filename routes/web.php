@@ -24,6 +24,7 @@ Route::controller(PostController::class)->middleware(['auth'])->group(function()
     Route::get('/posts/unlike/{id}', 'unlike')->name('unlike');
     Route::get('/posts/like/{id}', 'like')->name('like');
     Route::get('/posts/share/{id}', 'share')->name('share');
+    Route::get('/liked-posts', 'showLikedPosts')->name('liked-posts');
 });
 
 Route::get('/categories/{category}', [CategoryController::class,'index'])->middleware("auth");
