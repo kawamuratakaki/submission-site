@@ -12,6 +12,7 @@ use App\Models\Like;
 use Illuminate\Support\Facades\View;
 use App\Models\Feedback;
 use Carbon\Carbon;
+use App\Models\History;
 
 class PostController extends Controller
 {
@@ -35,10 +36,14 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
+        if (Auth::check() && Auth::user()->id === $post->user_id) {
+        $history = new History(['user_id' => Auth::id()]);
+        $post->histories()->save($history);
+    }
         return view('posts.show')->with(['post' => $post]);
     }
 
-    public function store(Post $post, PostRequest $request) // 引数をRequestからPostRequestにする
+    public function store(Post $post, PostRequest $request) 
     {
         $input = $request['post'];
         $input_tags = $request->tags_array; 
@@ -50,6 +55,7 @@ class PostController extends Controller
         
         $post->fill($input)->save();
         $post->tags()->attach($input_tags);
+        
         return redirect('/posts/' . $post->id);
     }
     
@@ -150,4 +156,30 @@ public function update(PostRequest $request, Post $post)
 
     return view('liked-posts.index', ['likedPosts' => $likedPosts]);
 }
+
+public function histories()
+    {
+        $histories = Auth::user()->histories()->with('post')->latest()->paginate(1000);
+
+        return view('histories.index', compact('histories'));
+    }
+    
+    public function historiesdestroy(History $history)
+{
+    // ログイン中のユーザーが履歴の所有者であるか確認
+    if (auth()->user()->id !== $history->user_id) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    // 履歴を削除
+    $history->delete();
+
+    // リダイレクト先などを設定
+    return redirect()->route('histories')->with('success', '履歴が削除されました。');
+}
+
+public function feedback()
+    {
+        return view('feedback');
+    }
 }
