@@ -19,7 +19,7 @@
         <div class="bg-red-900 rounded-lg shadow-md p-6 mb-6">
             <div class="mb-4">
                 <h3 class="text-lg font-bold text-yellow-200">おすすめポイント</h3>
-                <p class="text-yellow-200">{{ $post->body }}</p>
+                <p class="text-yellow-200">{!! nl2br(e($post->body)) !!}</p>
             </div>
             <h3 class="text-lg font-bold text-yellow-200">タグ</h3>
             @foreach($post->tags as $tag)

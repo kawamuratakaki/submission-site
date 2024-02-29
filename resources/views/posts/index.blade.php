@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>おすすめ漫画投稿サイト</title>
+    <title>おすすめ漫画投稿・紹介サイト</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
 </head>
@@ -31,7 +31,6 @@
                     {{ session('error') }}
                 </div>
             @endif
-
                 <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">マイタグ</h2>
                 <div class="flex flex-wrap justify-center">
             @foreach(Auth::user()->tags as $tag)
@@ -53,7 +52,10 @@
                     <h2 class="mb-2 text-lg font-semibold text-yellow-200">
                         <a href="/posts/{{ $post->id }}" class="transition duration-100 hover:text-white active:text-white">{{ $post->title }}</a>
                     </h2>
-                    <p class="mb-8 text-yellow-200">{{ $post->body }}</p>
+                    <span class="rounded border px-2 py-1 text-sm text-yellow-200">
+                        <h2 class="text-sm font-bold text-yellow-200">おすすめポイント</h2>
+                    <p class="mb-8 text-yellow-200">{!! nl2br(e($post->body)) !!}</p>
+                    </span>
     
                         <!-- カテゴリーやタグの情報を追加 -->
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
@@ -141,7 +143,13 @@
                 <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
                 <a href="{{ route('liked-posts') }}" class="transition duration-100 hover:text-white active:text-white">いいねした投稿</a>
                 </h2>
+                <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
+                <a href="{{ route('histories') }}" class="transition duration-100 hover:text-white active:text-white">履歴</a>
+                </h2>
             @endauth
+<h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
+                <a href="{{ route('feedback.index') }}" class="transition duration-100 hover:text-white active:text-white">フィードバック</a>
+                </h2>
             
                             <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
                                 
@@ -167,7 +175,10 @@
                     <h2 class="mb-2 text-lg font-semibold text-yellow-200">
                         <a href="/posts/{{ $post->id }}" class="transition duration-100 hover:text-white active:text-white">{{ $post->title }}</a>
                     </h2>
-                    <p class="mb-8 text-yellow-200">{{ $post->body }}</p>
+                    <span class="rounded border px-2 py-1 text-sm text-yellow-200">
+                        <h2 class="text-sm font-bold text-yellow-200">おすすめポイント</h2>
+                    <p class="mb-8 text-yellow-200">{!! nl2br(e($post->body)) !!}</p>
+                    </span>
     
                         <!-- カテゴリーやタグの情報を追加 -->
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
