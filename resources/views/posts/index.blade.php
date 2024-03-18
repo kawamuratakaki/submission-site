@@ -31,7 +31,9 @@
                     {{ session('error') }}
                 </div>
             @endif
-                <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">マイタグ</h2>
+            <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
+                <a href="{{ route('profile.edit') }}" class="transition duration-100 hover:text-white active:text-white">マイタグ</a>
+            </h2>
                 <div class="flex flex-wrap justify-center">
             @foreach(Auth::user()->tags as $tag)
                 <div class="border rounded-md mb-4 text-center text-2xl font-bold text-yellow-200 md:mb-6 lg:text-2xl">{{ $tag->tag_name }}</div>
@@ -61,7 +63,7 @@
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
                             <h2 class="text-sm font-bold text-yellow-200">タグ</h2>
                             @foreach($post->tags as $tag)
-                            <div>{{ $tag->tag_name }}</div>
+                            <a href="{{ route('posts.show.by.tag', $tag->tag_name) }}" class="hover:underline">{{ $tag->tag_name }}</a>
                             @endforeach
                         </span>
                         
@@ -91,7 +93,11 @@
                     @endauth
                         </span>
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
-                    <p>{{ $post->likes->count() }}いいね数</p>
+                        <p>いいね数{{ $post->likes->count() }}</p>
+                        </span>
+
+                        <span class="rounded border px-2 py-1 text-sm text-yellow-200">
+                        <a href="/posts/{{ $post->id }}"class="hover:underline">コメント数{{ $post->commentCount() }}</a>
                         </span>
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
                     <button class="share-button" data-share-url="{{ url(route('share', $post->id)) }}">シェア</button>
@@ -147,7 +153,13 @@
                 <a href="{{ route('histories') }}" class="transition duration-100 hover:text-white active:text-white">履歴</a>
                 </h2>
             @endauth
-<h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
+                <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
+                <a href="{{ route('questions.index') }}" class="transition duration-100 hover:text-white active:text-white">漫画質問へ</a>
+                </h2>
+                <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
+                <a href="{{ route('visual') }}" class="transition duration-100 hover:text-white active:text-white">ビジュアル</a>
+                </h2>
+                <h2 class="mb-4 text-center text-5xl font-bold text-yellow-200 md:mb-6 lg:text-3xl">
                 <a href="{{ route('feedback.index') }}" class="transition duration-100 hover:text-white active:text-white">フィードバック</a>
                 </h2>
             
@@ -184,7 +196,7 @@
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
                             <h2 class="text-sm font-bold text-yellow-200">タグ</h2>
                             @foreach($post->tags as $tag)
-                            <div>{{ $tag->tag_name }}</div>
+                            <a href="{{ route('posts.show.by.tag', $tag->tag_name) }}" class="hover:underline">{{ $tag->tag_name }}</a>
                             @endforeach
                         </span>
                         
@@ -214,7 +226,10 @@
                     @endauth
                         </span>
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
-                    <p>{{ $post->likes->count() }}いいね数</p>
+                        <p>いいね数{{ $post->likes->count() }}</p>
+                        </span>
+                        <span class="rounded border px-2 py-1 text-sm text-yellow-200">
+                        <a href="/posts/{{ $post->id }}"class="hover:underline">コメント数{{ $post->commentCount() }}</a>
                         </span>
                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
                     <button class="share-button" data-share-url="{{ url(route('share', $post->id)) }}">シェア</button>
@@ -224,9 +239,7 @@
             </div>
             @endforeach
 
-            <div class='paginate'>
-                {{ $posts->links() }}
-            </div>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     var shareButtons = document.querySelectorAll('.share-button');

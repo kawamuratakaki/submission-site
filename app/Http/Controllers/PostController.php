@@ -9,10 +9,11 @@ use Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Like;
-use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\View as IlluminateView;
 use App\Models\Feedback;
 use Carbon\Carbon;
 use App\Models\History;
+use Illuminate\View\View;
 
 class PostController extends Controller
 {
@@ -127,6 +128,7 @@ public function update(PostRequest $request, Post $post)
         Like::create([
             'post_id' => $id,
             'user_id' => Auth::id(),
+            'read_status' => 0,
         ]);
 
         return redirect()->back();
@@ -141,18 +143,18 @@ public function update(PostRequest $request, Post $post)
     }
     
     public function share($id)
-    {
-        // $postId を使用して投稿データを取得するなどの処理を追加
-        $post = Post::findOrFail($id);
-        
-        
-        return View::make('posts.show', compact('post'));
-    }
+{
+    // $postId を使用して投稿データを取得するなどの処理を追加
+    $post = Post::findOrFail($id);
+    
+    return view('posts.show', compact('post'));
+}
     
     public function showLikedPosts()
 {
     // ログインしているユーザーがいいねした投稿を取得
     $likedPosts = Auth::user()->likes()->with('post')->get();
+    
 
     return view('liked-posts.index', ['likedPosts' => $likedPosts]);
 }
@@ -182,4 +184,29 @@ public function feedback()
     {
         return view('feedback');
     }
+    
+    public function visual()
+    {
+        return view('visual');
+    }
+    
+public function showByTag($tag): View
+    {
+        $posts = Post::whereHas('tags', function ($query) use ($tag) {
+            $query->where('tag_name', $tag);
+        })->get();
+
+        return view('posts.index', compact('posts'));
+    }
+    public function toggleReadStatus($id) {
+    $like = Like::where('post_id', $id)->where('user_id', Auth::id())->first();
+
+    if ($like) {
+        $like->read_status = !$like->read_status; // 未読なら読んだ状態に、読んでいれば未読状態に切り替え
+        $like->save();
+    }
+
+    return redirect()->route('liked-posts');
 }
+}
+

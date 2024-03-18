@@ -18,9 +18,10 @@
         @method('patch')
 
         <div>
-                <x-picture-input />
-                <x-input-error class="mt-2" :messages="$errors->get('picture')" />
+            <x-picture-input />
+            <x-input-error class="mt-2" :messages="$errors->get('picture')" />
         </div>
+
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
@@ -51,6 +52,16 @@
             @endif
         </div>
 
+        <div>
+            <x-input-label for="tags" :value="__('My Tags')" />
+            <select id="tags" name="tags[]" multiple class="block w-full mt-1 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
+                @foreach($tags as $tag)
+                    <option value="{{ $tag->id }}">{{ $tag->tag_name }}</option>
+                @endforeach
+            </select>
+            <x-input-error class="mt-2" :messages="$errors->get('tags')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 
@@ -58,7 +69,12 @@
                 <p
                     x-data="{ show: true }"
                     x-show="show"
-                    x-transition
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 transform translate-x-4"
+                    x-transition:enter-end="opacity-100 transform translate-x-0"
+                    x-transition:leave="transition ease-in duration-200"
+                    x-transition:leave-start="opacity-100 transform translate-x-0"
+                    x-transition:leave-end="opacity-0 transform translate-x-4"
                     x-init="setTimeout(() => show = false, 2000)"
                     class="text-sm text-gray-600"
                 >{{ __('Saved.') }}</p>
