@@ -13,6 +13,9 @@
             <div class="bg-red-900 py-6 sm:py-8 lg:py-12">
             <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div class="mb-10 md:mb-16">
+            <button type="submit" class="bg-red-900 px-6 py-2 rounded-md shadow-sm text-lg font-semibold text-yellow-200 hover:bg-white hover:text-black cursor-pointer">
+                <a href="/">戻る</a>
+            </button>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
 
         @if($histories->count() > 0)
@@ -70,22 +73,21 @@
                                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
                                             <button class="share-button" data-share-url="{{ url(route('share', $history->post->id)) }}">シェア</button>
                                         </span>
+                                        @if(auth()->check() && auth()->user()->id === $history->user_id)
+                                            <form action="{{ route('histories.destroy', $history->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <h2 class="text-sm font-bold text-yellow-200">
+                                            <button type="submit" onclick="return confirm('本当に削除しますか？')"class="transition duration-100 hover:text-white active:text-black">履歴削除</button>
+                                            </h2>
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        @if(auth()->check() && auth()->user()->id === $history->user_id)
-                            <form action="{{ route('histories.destroy', $history->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" onclick="return confirm('本当に削除しますか？')">削除</button>
-                            </form>
-                        @endif
                     @endif
                 @endforeach
-            </div>
-                        <div class="transition duration-100 hover:text-black active:text-yellow-200 mt-8">
-                <a href="/">戻る</a>
             </div>
             </div>
             </div>

@@ -15,7 +15,9 @@
                 <div class="mb-4">
                     @foreach($feedbacks as $feedback)
                         <div class="flex flex-col border border-yellow-200 rounded-md p-4 mb-4">
-                            <p class="text-lg text-yellow-200">{!! nl2br(e($feedback->content)) !!}</p>
+                            <p class="text-lg text-yellow-200">
+                                <a href="{{ route('feedback.show', $feedback->id) }}" class="transition duration-100 hover:text-white active:text-white">{!! nl2br(e($feedback->content)) !!}</a>
+                            </p>
                             <p class="text-xs text-right text-yellow-200">{{ $feedback->created_at->format('Y年m月d日')}}</p>
                         </div>
                     @endforeach

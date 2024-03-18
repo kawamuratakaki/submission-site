@@ -21,7 +21,7 @@
                 <div class="transition duration-100 hover:text-black active:text-yellow-200">
                     <a href="{{ route('feedback.index') }}">戻る</a>
                 </div>
-<div class="text-yellow-200 font-bold hover:underline">
+                <div class="text-yellow-200 font-bold hover:underline">
                     <input type="submit" value="保存" class="bg-red-900 px-6 py-2 rounded-md shadow-sm text-lg font-semibold text-yellow-200 hover:bg-red-900 hover:text-white cursor-pointer">
                 </div>
         </form>

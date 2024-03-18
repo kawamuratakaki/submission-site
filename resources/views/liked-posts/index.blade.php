@@ -12,6 +12,10 @@
     <div class="bg-red-900 py-6 sm:py-8 lg:py-12">
         <div class="mx-auto max-w-screen-2xl px-4 md:px-8">
             <div class="mb-10 md:mb-16">
+                <button type="submit" class="bg-red-900 px-6 py-2 rounded-md shadow-sm text-lg font-semibold text-yellow-200 hover:bg-white hover:text-black cursor-pointer">
+    <a href="/">戻る</a>
+</button>
+
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-4">
                     <!-- ここに記事のループを追加 -->
                     @foreach ($likedPosts as $like)
@@ -66,6 +70,15 @@
                                             <p>{{ $like->post->likes->count() }}いいね数</p>
                                         </span>
                                         <span class="rounded border px-2 py-1 text-sm text-yellow-200">
+                    @auth
+                        @if ($like->read_status)
+                            <a href="{{ route('toggleReadStatus', ['id' => $like->post->id]) }}" class="btn btn-info">読んだ</a>
+                        @else
+                            <a href="{{ route('toggleReadStatus', ['id' => $like->post->id]) }}" class="btn btn-success">読みたい</a>
+                        @endif
+                    @endauth
+                </span>
+                                        <span class="rounded border px-2 py-1 text-sm text-yellow-200">
                                             <button class="share-button" data-share-url="{{ url(route('share', $like->post->id)) }}">シェア</button>
                                         </span>
                                         </div>
@@ -76,11 +89,40 @@
                     @endforeach
                 </div>
 
-                <div class="transition duration-100 hover:text-black active:text-yellow-200 mt-8">
-                    <a href="/">戻る</a>
-                </div>
             </div>
         </div>
     </div>
+                <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var shareButtons = document.querySelectorAll('.share-button');
+            
+                shareButtons.forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        // ボタンに付加されたdata-share-url属性からシェアURLを取得
+                        var shareUrl = button.getAttribute('data-share-url');
+            
+                        // コピー関数を呼び出す
+                        copyToClipboard(shareUrl);
+                    });
+                });
+            
+                function copyToClipboard(text) {
+                    var textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+            
+                    try {
+                        var successful = document.execCommand('copy');
+                        var msg = successful ? 'コピーに成功しました！' : 'コピーに失敗しました。手動でコピーしてください。';
+                        alert(msg);
+                    } catch (err) {
+                        console.error('コピーに失敗しました。', err);
+                    }
+            
+                    document.body.removeChild(textarea);
+                }
+            });
+            </script>
 </body>
 </html>

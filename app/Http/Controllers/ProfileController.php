@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Tag;
 
 class ProfileController extends Controller
 {
@@ -16,8 +17,12 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $user = $request->user();
+        $tags = Tag::all(); // タグの一覧を取得する（適切なモデルとして修正してください）
+        
         return view('profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'tags' => $tags, // ビューにタグの一覧を渡す
         ]);
     }
 
@@ -25,23 +30,33 @@ class ProfileController extends Controller
      * Update the user's profile information.
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $request->user()->fill($request->safe()->only(['name', 'email']));
+{
+    $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-        
-        $path = null;
-        if ($request->hasFile('picture')) {
-            $path = $request->file('picture')->store('profile-icons', 'public');
-            $request->user()->profile_photo_path = $path;
-        }
+    // ユーザー名とメールアドレスの更新
+    $user->fill($request->safe()->only(['name', 'email']));
 
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    // メールアドレスが変更された場合、メール確認情報をリセット
+    if ($user->isDirty('email')) {
+        $user->email_verified_at = null;
     }
+
+    // プロフィール画像の更新
+    if ($request->hasFile('picture')) {
+        $path = $request->file('picture')->store('profile-icons', 'public');
+        $user->profile_photo_path = $path;
+    }
+
+    // タグの更新
+    $user->tags()->sync($request->input('tags'));
+
+    // ユーザー情報の保存
+    $user->save();
+
+    // プロフィール編集画面にリダイレクト
+    return redirect()->route('profile.edit')->with('status', 'profile-updated');
+}
+
 
     /**
      * Delete the user's account.
@@ -67,6 +82,5 @@ class ProfileController extends Controller
 
     return Redirect::to('/');
 }
-
-    
+ 
 }

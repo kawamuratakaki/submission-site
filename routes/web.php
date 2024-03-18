@@ -5,6 +5,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\VisualController;
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -26,6 +31,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/liked-posts', [PostController::class, 'showLikedPosts'])->name('liked-posts');
     Route::get('/histories', [PostController::class, 'histories'])->name('histories');
     Route::delete('/histories/{history}', [PostController::class, 'historiesdestroy'])->name('histories.destroy');
+    Route::get('/posts/tag/{tag}', [PostController::class, 'showByTag'])->name('posts.show.by.tag');
+    Route::get('/toggle-read-status/{id}', [PostController::class, 'toggleReadStatus'])->name('toggleReadStatus');
 });
 
 Route::middleware('auth')->group(function () {
@@ -42,6 +49,16 @@ Route::get('/posts/{post}', [PostController::class, 'show']);
 Route::get('/feedback/create', [FeedbackController::class, 'create'])->name('feedback.create');
 Route::post('/feedback/store', [FeedbackController::class,'store'])->name('feedback.store');
 Route::get('/feedback/index', [FeedbackController::class, 'index'])->name('feedback.index');
+Route::get('/feedback/{id}', [FeedbackController::class, 'show'])->name('feedback.show');
 
 
+Route::post('/comments/{id}', [CommentController::class, 'store'])->name('comments.store');
+Route::put('/comments/{id}', [CommentController::class, 'update'])->name('comments.update');
+Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('comments.destroy');
+
+Route::resource('questions', QuestionController::class);
+
+Route::get('/visual', [VisualController::class, 'index'])->name('visual');
+
+Route::post('/questions/{questionId}/answers', [QuestionController::class, 'storeAnswer'])->name('questions.storeAnswer');
 require __DIR__.'/auth.php';

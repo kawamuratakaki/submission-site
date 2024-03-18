@@ -34,4 +34,10 @@ class FeedbackController extends Controller
     return redirect()->route('feedback.index')->with('success', 'フィードバックを受け付けました。');
 }
 
+public function show($id)
+{
+    $feedback = Feedback::findOrFail($id);
+    return view('feedback.show', compact('feedback'));
+}
+
 }

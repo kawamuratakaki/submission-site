@@ -18,6 +18,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('post_id')->constrained();
+            $table->boolean('read_status')->default(0);
         });
     }
 

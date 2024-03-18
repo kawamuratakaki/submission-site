@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Achievement extends Model
 {
     use HasFactory;
+    protected $fillable = ['user_id', 'content', 'conplete'];
     
     public function user()   
     {

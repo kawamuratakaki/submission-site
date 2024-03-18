@@ -43,14 +43,13 @@
                     <input type="submit" value="保存" class="bg-red-900 px-6 py-2 rounded-md shadow-sm text-lg font-semibold text-yellow-200 hover:bg-red-900 hover:text-white cursor-pointer">
                 </div>
         </form>
-                <div class="transition duration-100 hover:text-red-600 active:text-yellow-200">
-                <form action="/posts/{{ $post->id }}" id="form_{{ $post->id }}" method="post">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" onclick="deletePost({{ $post->id }})">削除</button>
-                </form>
-                </div>
-                
+        <div class="text-lg transition duration-100 hover:text-red-600 active:text-yellow-200">
+            <form action="/posts/{{ $post->id }}" id="form_{{ $post->id }}" method="post">
+                @csrf
+                @method('DELETE')
+                <button type="submit" onclick="deletePost({{ $post->id }})" class="text-lg font-bold">削除</button>
+            </form>
+        </div>
             </div>
 </div>
     <script>
