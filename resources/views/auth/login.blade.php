@@ -47,9 +47,9 @@
                         Continue with Google
                     </button>
 
-                    <div class="flex items-center justify-center bg-gray-100 p-4">
-                        <p class="text-center text-sm text-gray-500">Don't have an account? <a href="#" class="text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">Register</a></p>
-                    </div>
+<div class="flex items-center justify-center bg-gray-100 p-4">
+    <p class="text-center text-sm text-gray-500">Don't have an account? <a href="{{ route('register') }}" class="text-indigo-500 transition duration-100 hover:text-indigo-600 active:text-indigo-700">Register</a></p>
+</div>
                 </div>
             </form>
         </div>
