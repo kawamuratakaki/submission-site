@@ -10,11 +10,13 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\VisualController;
 
 
+Route::get('/', function () {
+    return view('index');
+})->middleware(['auth', 'verified'])->name('index');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::middleware(['auth'])->group(function () {
+    Route::get('/index', [PostController::class, 'index'])->name('index');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/', [PostController::class, 'index'])->name('index');
@@ -59,6 +61,9 @@ Route::delete('/comments/{id}', [CommentController::class, 'destroy'])->name('co
 Route::resource('questions', QuestionController::class);
 
 Route::get('/visual', [VisualController::class, 'index'])->name('visual');
+Route::get('/my-posts', [VisualController::class, 'myPosts'])->name('my_posts');
 
 Route::post('/questions/{questionId}/answers', [QuestionController::class, 'storeAnswer'])->name('questions.storeAnswer');
+
+Route::middleware(['auth'])->get('/user/posts', [PostController::class, 'userPosts'])->name('user.posts');
 require __DIR__.'/auth.php';

@@ -13,13 +13,24 @@
         @csrf
     </form>
 
-    <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
+<form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-6 space-y-6">
         @csrf
         @method('patch')
-
+        
         <div>
-            <x-picture-input />
-            <x-input-error class="mt-2" :messages="$errors->get('picture')" />
+
+            @if ($user->profile_photo_path)
+            <label for="image">現在のプロフィール画像</label>
+                <img src="{{ $user->profile_photo_path }}" class="w-40 h-40 rounded-full mt-2" alt="Profile Photo">
+            @endif
+            <label for="image">プロフィール画像</label>
+            <input type="file" id="image" name="image" class="w-full border border-gray-300 rounded-md px-3 py-2 mt-2 focus:outline-none focus:border-yellow-200">
+            <x-input-error class="mt-2" :messages="$errors->get('image')" />
+        </div>
+        
+        <div>
+            <input type="checkbox" id="remove_picture" name="remove_picture" value="1">
+            <label for="remove_picture">画像を設定しない</label>
         </div>
 
         <div>
@@ -51,16 +62,17 @@
                 </div>
             @endif
         </div>
-
+        
         <div>
             <x-input-label for="tags" :value="__('My Tags')" />
             <select id="tags" name="tags[]" multiple class="block w-full mt-1 rounded-md shadow-sm border-gray-300 focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required>
                 @foreach($tags as $tag)
-                    <option value="{{ $tag->id }}">{{ $tag->tag_name }}</option>
+                    <option value="{{ $tag->id }}" {{ in_array($tag->id, $selectedTags) ? 'selected' : '' }}>{{ $tag->tag_name }}</option>
                 @endforeach
             </select>
             <x-input-error class="mt-2" :messages="$errors->get('tags')" />
         </div>
+
 
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>

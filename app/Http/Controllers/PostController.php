@@ -36,13 +36,15 @@ class PostController extends Controller
     }
 
     public function show(Post $post)
-    {
-        if (Auth::check() && Auth::user()->id === $post->user_id) {
+{
+    // ログインユーザーが投稿者であるかどうかを確認して、履歴を保存
+    if (Auth::check()) {
         $history = new History(['user_id' => Auth::id()]);
         $post->histories()->save($history);
     }
-        return view('posts.show')->with(['post' => $post]);
-    }
+
+    return view('posts.show')->with(['post' => $post]);
+}
 
     public function store(Post $post, PostRequest $request) 
     {
@@ -207,6 +209,15 @@ public function showByTag($tag): View
     }
 
     return redirect()->route('liked-posts');
-}
+    }
+    
+    public function userPosts()
+    {
+        // ログインユーザーの投稿のみを取得
+        $user = Auth::user();
+        $posts = $user->posts()->get();
+
+        return view('posts.index', compact('posts'));
+    }
 }
 

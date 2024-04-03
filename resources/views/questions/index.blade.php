@@ -35,7 +35,7 @@
                             </div>
                         @endforeach
                     <!-- 回答フォーム -->
-                    <form action="{{ route('questions.storeAnswer', ['questionId' => $question->id]) }}" method="post">
+                    <form action="{{ route('questions.storeAnswer', ['questionId' => $question->id]) }}" method="post" onsubmit="return confirmAnswerSubmission()">
                         @csrf
                         <div class="mb-2">
                             <label for="content" class="text-lg font-bold text-yellow-200">回答</label>
@@ -49,6 +49,11 @@
             </div>
         </div>
     </div>
-    
+    <script>
+    function confirmAnswerSubmission() {
+    'use strict';
+    return confirm('編集と削除ができませんが投稿しますか？');
+    }
+    </script>
 </body>
 </html>

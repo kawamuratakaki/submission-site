@@ -50,7 +50,7 @@
                                                 <h2 class="text-sm font-bold text-yellow-200">ユーザー名</h2>
                                                 <div class="flex items-center gap-2">
                                                     @if ($history->post->user->profile_photo_path)
-                                                        <img src="{{ asset('storage/' . $history->post->user->profile_photo_path) }}" class="w-8 h-8 rounded-full">
+                                                        <img src="{{ $history->post->user->profile_photo_path }}" class="w-8 h-8 rounded-full">
                                                     @endif
                                                     <div>{{ $history->post->user->name }}</div>
                                                 </div>

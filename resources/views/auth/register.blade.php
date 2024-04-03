@@ -1,3 +1,13 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>おすすめ漫画投稿・紹介サイト</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+</head>
+<body>
 <x-guest-layout>
     <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
         @csrf
@@ -40,10 +50,15 @@
         </div>
         
         <div class="mb-4">
-        <label for="profile_photo" class="block text-sm font-medium text-gray-700">
-            アイコン画像
-        </label>
-        <input type="file" name="profile_photo" id="profile_photo" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+            <label for="image" class="block text-sm font-medium text-gray-700">
+                プロフィール画像
+            </label>
+            <input type="file" name="image" id="image" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+        </div> 
+        
+        <div>
+            <input type="checkbox" id="remove_picture" name="remove_picture" value="1">
+            <label for="remove_picture">画像を設定しない</label>
         </div>
         
         <div class="category">
@@ -66,3 +81,6 @@
         </div>
     </form>
 </x-guest-layout>
+</body>
+</html>
+
