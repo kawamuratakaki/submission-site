@@ -10,7 +10,7 @@
 </head>
 <body class="bg-red-900 min-h-screen flex justify-center items-center">
     <div class="container mx-auto py-8 px-4">
-        <form action="{{ route('questions.store') }}" method="post" class="bg-red-900 rounded-lg shadow-md p-6">
+        <form action="{{ route('questions.store') }}" method="post" onsubmit="return confirmQuestionSubmission()" class="bg-red-900 rounded-lg shadow-md p-6">
             @csrf
             <div class="mb-4">
                 <label for="title" class="text-xl font-bold text-yellow-200">質問タイトル</label>
@@ -27,5 +27,11 @@
             </div>
         </form>
     </div>
+    <script>
+    function confirmQuestionSubmission() {
+    'use strict';
+    return confirm('編集と削除ができませんが投稿しますか？');
+    }
+    </script>
 </body>
 </html>

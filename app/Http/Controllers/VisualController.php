@@ -16,4 +16,5 @@ class VisualController extends Controller
         // $posts 変数をビューに渡す
         return view('visual', compact('posts'));
     }
+    
 }

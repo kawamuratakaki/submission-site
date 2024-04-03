@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 use App\Models\Tag;
+use Cloudinary;
 
 class RegisteredUserController extends Controller
 {
@@ -35,6 +36,9 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'tags_array' => ['required', 'array', 'min:1'], // タグを少なくとも1つ以上選択する必要がある
+        ], [
+            'tags_array.required' => '少なくとも1つのタグを選択してください。',
         ]);
 
         $user = User::create([
@@ -44,21 +48,24 @@ class RegisteredUserController extends Controller
         ]);
 
         // プロフィール画像の保存
-        if ($request->hasFile('profile_photo')) {
-            $path = $request->file('profile_photo')->store('profile-photos', 'public');
-            $user->profile_photo_path = $path;
-            $user->save(); // プロフィール画像のパスを保存
-        }
+        $input_user = $request->only(['user']); // $request->input('user')ではなく$request->only(['user'])です
+
+    if ($request->hasFile('image')) {
+        $image_url = Cloudinary::upload($request->file('image')->getRealPath())->getSecurePath();
+        $input_user['profile_photo_path'] = $image_url;
+    }elseif ($request->has('remove_picture')) {
+        // 画像を削除する場合は、プロフィール画像パスを null に設定
+        $input_user['profile_photo_path'] = null; // $input_user->profile_photo_path ではなく $input_user['profile_photo_path'] です
+    }
+        $user->fill($input_user)->save();
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        $input_tags = $request->tags_array;
+        $input_tags = $request->tags_array ?? [];
         $user->tags()->attach($input_tags);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect('/index');
     }
-    
-    
 }

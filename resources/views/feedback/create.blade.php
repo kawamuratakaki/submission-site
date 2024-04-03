@@ -10,7 +10,7 @@
 </head>
 <body class="bg-red-900 min-h-screen flex justify-center items-center">
     <div class="container mx-auto py-8 px-4">
-        <form action="{{ route('feedback.store') }}" method="POST" class="bg-red-900 rounded-lg shadow-md p-6">
+        <form action="{{ route('feedback.store') }}" method="POST" onsubmit="return confirmFeedbackSubmission()" class="bg-red-900 rounded-lg shadow-md p-6">
             @csrf
             <div class="bg-red-900 mb-4">
                 <label for="content" class="text-lg font-bold text-yellow-200">フィードバック</label>
@@ -26,6 +26,12 @@
                 </div>
         </form>
     </div>
+    <script>
+    function confirmFeedbackSubmission() {
+    'use strict';
+    return confirm('編集と削除ができませんが投稿しますか？');
+    }
+    </script>
 </body>
 
 </html>
